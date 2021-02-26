@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8">
+  <title>watermark.js - watermarks in the browser</title>
+  <script src="scripts/polyfill.js"></script>
+  <script src="scripts/watermark.js"></script>
+  <script src="scripts/upload.js"></script>
+  <script src="scripts/WM.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Josefin+Slab|Maven+Pro' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/default.min.css">
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <form action="" id="uploadForm" method="POST" style="margin-top: 45px;">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <span class="btn btn-primary btn-file">
+                Browse&hellip; <input type="file" id="target">
+              </span>
+            </span>
+            <input type="text" class="form-control" readonly>
+          </div>
+          <span class="help-block">
+            Select the image to watermark
+          </span>
+          <div class="input-group">
+            <span class="input-group-btn">
+              <span id="watermark-button" type="button" class="btn btn-primary btn-file" disabled>
+                Browse&hellip; <input type="file" id="watermark">
+              </span>
+            </span>
+            <input type="text" class="form-control" id="watermark-name" readonly>
+          </div>
+          <span class="help-block">
+            Select the watermark image
+          </span>
+          <div class="input-group" style="display: none;">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="radio">
+                  <label><input type="radio" name="position" value="lowerRight" checked disabled>Lower Right</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" name="position" value="lowerLeft" disabled>Lower Left</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" name="position" value="upperRight" disabled>Upper Right</label>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="radio">
+                  <label><input type="radio" name="position" value="upperLeft" disabled>Upper Left</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" name="position" value="center" disabled>Center</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-offset-1 col-md-7" id="preview">
+        <h2 class="text" style="margin-top:0">Preview</h2>
+      </div>
+    </div>
+</body>
+</html>
