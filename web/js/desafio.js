@@ -6,10 +6,10 @@ $(document).ready(function(){
 });
 
 var carrito = []
-var total = 0
 var storage = localStorage
 var crt = ""
 var carritoNum = "0"
+let total = 0
 
 function fullNum(){
 	var carritoFull = document.getElementById("carrito-dropdown");
@@ -22,6 +22,14 @@ function fullNum(){
 	}
 	else{
 		carritoFull.innerHTML = "🛒";
+	}
+}
+
+function calcTotal(){
+	total = 0
+	for (const [key, value] of Object.entries(storage)){
+			sub = parseInt(list[key].precio * storage[key])
+			total = total + sub;
 	}
 }
 
@@ -41,18 +49,19 @@ function cantidadTotal(id){
 	if (storage[id] == 0){
 		if (confirm("Esta seguro de que eliminar este produto?")){
 		localStorage.removeItem(id)
-		$("#mostrarCarrito").removeClass()
+		$("main").load("carrito.html");
 		}
 		else{
 			storage[id] = 1
 		}
-		mostrarCarrito();
 	}
-	$("main").load("carrito.html");
-	$(document).ajaxComplete(function() {
-	$("#mostrarCarrito").removeClass()
-	  	mostrarCarrito();
- 	})
+	fullNum()
+	var precio = document.getElementById("td" + id);
+	var precioTotal = document.getElementById("precioTotal");
+	precio.innerHTML = "¥" + list[id].precio * storage[id];
+	calcTotal()
+	precioTotal.innerHTML = "¥" + total
+
 }
 
 function vaciar(){
@@ -77,19 +86,17 @@ function enCarrito(){
 
 function mostrarCarrito(){
 		var productosCarrito = []
-		var total = 0
 		var mostrarCarrito = document.getElementById("mostrarCarrito");
 		for (const [key, value] of Object.entries(storage)){
-			sub = parseInt(list[key].precio * storage[key])
+			calcTotal()
 			var producto = 
 				`<tr>
-					<td class="white col-2"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
+					<td class="white" style="width: 16.666667%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
 					<td scope="col" class="table__producto col-9 white"><b>${list[key].nombre}</b><p>Tipo de producto: ${list[key].tipo}</p><p>Tipo de modelo: ${list[key].modelo}</p></td> 
-					<td class="white col-1">¥${sub}</td> 
-					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" style="padding-right: 0px; padding-left: 14px;">¥${list[key].precio}</td>
+					<td class="white col-1" id="td${list[key].numero}">¥${sub}</td> 
+					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" class="form-control" style="padding-right: 0px; padding-left: 14px";>¥${list[key].precio}</td>
 				</tr>`
 			productosCarrito.push(producto);
-			total = total + sub;
 		}
 		if (mostrarCarrito != null) {
 			if (storage.length == 0){
@@ -100,17 +107,17 @@ function mostrarCarrito(){
 					`<table class="table table-dark">
 				    	<thead>
 							<tr>
-						    	<th class="col-2"> </th>
+						    	<th style="width: 16.666667%"> </th>
 							    <th scope="col" class="white col-9">Nombre</th>
 							    <td class="white col-1" >Precio</td>
 							    <td class="white col-1">Cantidad</td>
 							</tr>
 							` + productosCarrito + `
 							<tr>
-							    <td class="white col-2">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
+							    <td style="width: 16.666667%">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
 						    	<td  class="white col-9"></td>
 							    <td scope="col" class="table__producto col-1 white">Total:</td>
-							    <td class="white col-1">¥${total}</td>
+							    <td class="white col-1" id="precioTotal">¥${total}</td>
 							</tr>
 						</thead>
 					</table>`
@@ -134,7 +141,6 @@ $(document).ready(function(){
  	$("#carrito").click(function(){
  		$("main").load("carrito.html")
  		$(document).ajaxComplete(function() {
- 			$("#mostrarCarrito").addClass("animate__animated animate__fadeIn")
 	  		mostrarCarrito();
  		});
  	});
@@ -157,8 +163,7 @@ $(function(){
 				carrito.push(list[key].nombre + " x" + storage[key]);
 			}
 			for (const [key, value] of Object.entries(storage)){
-				sub = parseInt(list[key].precio * storage[key])
-				total = total + sub;
+				calcTotal()
 			}
 			final = (carrito.join("<br>"))
 			var crt = document.getElementById("crt");
