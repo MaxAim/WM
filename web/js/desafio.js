@@ -1,3 +1,5 @@
+//Carga la lista de productos
+
 $(document).ready(function(){
     $.ajax({type: "GET",
           url: "js/productos.js",
@@ -5,11 +7,15 @@ $(document).ready(function(){
     });
 });
 
+//Prepara las variables usadas en las funciones
+
 var carrito = []
 var storage = localStorage
 var crt = ""
 var carritoNum = "0"
 let total = 0
+
+//Lleva la cuenta de la cantidad total de productos en el carrito y los muestra en la pagina
 
 function fullNum(){
 	var carritoFull = document.getElementById("carrito-dropdown");
@@ -25,6 +31,8 @@ function fullNum(){
 	}
 }
 
+//Calcula el costo total de todo lo comprado
+
 function calcTotal(){
 	total = 0
 	for (const [key, value] of Object.entries(storage)){
@@ -32,6 +40,8 @@ function calcTotal(){
 			total = total + sub;
 	}
 }
+
+//Agrega productos al carrito en el localStorage y si ya estan en el mismo, le suma uno a la cantidad
 
 function add(id){
 	if(id in storage){
@@ -43,6 +53,8 @@ function add(id){
 	enCarrito()
 	fullNum()
 }
+
+//Maneja la cantidad puesta en el input del carrito
 
 function cantidadTotal(id){
 	storage[id] = parseInt($("#" + id).val());
@@ -64,6 +76,8 @@ function cantidadTotal(id){
 
 }
 
+//Vacia el carrito
+
 function vaciar(){
         if (confirm("Esta seguro de que quiere vaciar su carrito?")){
 			$(".cantidad").text("")
@@ -75,6 +89,8 @@ function vaciar(){
 		}
 }
 
+//Muestra que objetos hay en el carrito
+
 function enCarrito(){
 	for (const [key, value] of Object.entries(storage)){
 		var bp = document.getElementById("bp-" + key);
@@ -83,6 +99,8 @@ function enCarrito(){
 		}
 	}
 }
+
+//Genera la pagina de carrito
 
 function mostrarCarrito(){
 		var productosCarrito = []
@@ -93,7 +111,7 @@ function mostrarCarrito(){
 				`<tr>
 					<td class="white" style="width: 16.666667%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
 					<td scope="col" class="table__producto col-9 white"><b>${list[key].nombre}</b><p>Tipo de producto: ${list[key].tipo}</p><p>Tipo de modelo: ${list[key].modelo}</p></td> 
-					<td class="white col-1" id="td${list[key].numero}">¥${sub}</td> 
+					<td class="white col-1" id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</td> 
 					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" class="form-control" style="padding-right: 0px; padding-left: 14px";>¥${list[key].precio}</td>
 				</tr>`
 			productosCarrito.push(producto);
@@ -125,6 +143,8 @@ function mostrarCarrito(){
 		}
 }
 
+//Se encarga de cargar las distintas paginas
+
 $(document).ready(function(){
 	if ($("main").is(":empty")){
   		$("main").load("home.html");
@@ -146,9 +166,7 @@ $(document).ready(function(){
  	});
 })
 
-function enviar(){
-     alert("sadsadsad");
-};
+//Maneja el menu dropdown del carrito
 
 $(function(){
 	$("#carrito-dropdown").on({
@@ -180,6 +198,8 @@ $(function(){
 		},
 	})
 });
+
+//Cierra el carrito dropdown cuando se clickea dos veces. se clickea fuera del mismo o se se abre la pagina de carrito 
 
 $(document).mouseup(function(e) {
     var container = $(".carrito-dropdown");
