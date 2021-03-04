@@ -213,7 +213,7 @@ $(document).ready(function(){
 	    	$("main").load(toLoad);
 	    	$(document).ajaxComplete(function() {
 		  		enCarrito();
-		  		cargarCarrito();
+		  		mostrarCarrito();
 		  		fullNum();
  			})
  		}
