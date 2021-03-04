@@ -18,12 +18,14 @@ let total = 0
 //Lleva la cuenta de la cantidad total de productos en el carrito y los muestra en la pagina
 
 function fullNum(){
+	var notificacion = document.getElementById("notificacion")
 	var carritoFull = document.getElementById("carrito-dropdown");
 	for (const [key, value] of Object.entries(storage)){
 		carritoNum = parseInt(carritoNum) + parseInt(storage[key])
 	}
 	if (carritoNum > 0){
 		carritoFull.innerHTML = "🛒 (" + carritoNum + ")";
+		notificacion.innerHTML = carritoNum
 		carritoNum = 0
 	}
 	else{
@@ -126,7 +128,7 @@ function mostrarCarrito(){
 			calcTotal()
 			var producto = 
 				`<tr>
-					<td class="white" style="width: 50%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
+					<td class="white" style="max-width: 50%; min-width: 20%;"><img style="max-width: 200px" class="col-12" src="img/${list[key].id}.jpg"></td> 
 					<td scope="col" class="table__producto col-8 white"><b>${list[key].nombre}</b><p class="mobile__on">¥${list[key].precio}</p><p class="mobile__off">Tipo de producto: ${list[key].tipo}</p><p class="mobile__off">Tipo de modelo: ${list[key].modelo}</p></td> 
 					<td class="white col-1 mobile__off">¥${list[key].precio}</td> 
 					<td  class="white col-2"><div style="width: 100px; display: flex;"><button style="height: 34px;" onclick="cantidadTotalMenos(${key})">-</button><input style="max-width: 35px; padding: 0;" type="tel" value="${storage[key]}" class="col-12 cantidad" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" ><button style="height: 34px" onclick="cantidadTotalMas(${key})">+</button></div>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
@@ -142,14 +144,14 @@ function mostrarCarrito(){
 					`<table class="table table-dark">
 				    	<thead>
 							<tr>
-						    	<th style="width: 50%"> </th>
+						    	<th style="max-width: 50% min-width: 20%;"> </th>
 							    <th scope="col" class="white col-9">Nombre</th>
 							    <td class="white col-1 mobile__off" >Precio</td>
 							    <td class="white col-2">Cantidad</td>
 							</tr>
 							` + productosCarrito + `
 							<tr>
-							    <td style="width: 50%">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
+							    <td style="max-width: 50% min-width: 20%;">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
 						    	<td  class="white col-8"><p class="mobile__on">Total:</p></td>
 							    <td scope="col" class="table__producto col-1 white mobile__off">Total:</td>
 							    <td class="white col-2" id="precioTotal">¥${total}</td>
@@ -169,7 +171,7 @@ function mostrarMiniCarrito(){
 			calcTotal()
 			var producto = 
 				`<tr>
-					<td class="white" style="width: 30%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
+					<td class="white" style="width: 30%"><img class="col-12"  src="img/${list[key].id}.jpg"></td> 
 					<td scope="col" class="table__producto col-9 white" style="width: 50%"><b>${list[key].nombre} x ${storage[key]}<p>¥${list[key].precio}</p></b></td> 
 					<td  class="white col-1"><p>¥${parseInt(list[key].precio * storage[key])}</p></td>
 				</tr>`
@@ -187,7 +189,7 @@ function mostrarMiniCarrito(){
 							` + final + `
 							<tr>
 							    <td style="width: 30%"> <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
-						    	<td  class="white col-9" style="width: 50%"> <button onclick="carritoDesktop()" id="carritoMobile" class="btn btn-primary btn-file">Ir a carrito</button></td>
+						    	<td  class="white col-9" style="width: 50%"> <button onclick="cargarCarrito()" id="carritoMobile" class="btn btn-primary btn-file">Ir a carrito</button></td>
 							    <td class="white col-1" style="width: 10%" id="precioTotalMini">Total:¥${total}</td>
 							</tr>
 						</thead>
@@ -219,17 +221,11 @@ $(document).ready(function(){
  	})
 })
 
- function carritoMobile(){
- 		$(document).ajaxComplete(function() {
- 	 	$("main").load("carrito.html");
-	  		mostrarCarrito();
-	  		$("#carritoMobile").hide();
- 		})
- 	};
 
-function carritoDesktop(){
+function cargarCarrito(){
 	$("main").load("carrito.html")
 	$(document).ajaxComplete(function() {
+		$("main").load("carrito.html")
   		mostrarCarrito();
 	});
 }
