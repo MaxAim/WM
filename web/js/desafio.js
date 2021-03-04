@@ -24,12 +24,14 @@ function fullNum(){
 		carritoNum = parseInt(carritoNum) + parseInt(storage[key])
 	}
 	if (carritoNum > 0){
+		$("#notificacion").show()
 		carritoFull.innerHTML = "🛒 (" + carritoNum + ")";
 		notificacion.innerHTML = carritoNum
 		carritoNum = 0
 	}
 	else{
 		carritoFull.innerHTML = "🛒";
+		$("#notificacion").hide()
 	}
 }
 
@@ -112,10 +114,9 @@ function vaciar(){
 
 function enCarrito(){
 	for (const [key, value] of Object.entries(storage)){
-		var bp = document.getElementById("bp-" + key);
-		if (bp != null){
-			bp.innerHTML = "(" + parseInt(storage[key]) + " en carrito)";
-		}
+		var x = key
+		$("#bp-" + x).html("(" + parseInt(storage[x]) + " en carrito)");
+		$(".mobile__off #bp-" + x).html("(" + parseInt(storage[x]) + " en carrito)");
 	}
 }
 
@@ -212,6 +213,7 @@ $(document).ready(function(){
 	    	$("main").load(toLoad);
 	    	$(document).ajaxComplete(function() {
 		  		enCarrito();
+		  		cargarCarrito();
 		  		fullNum();
  			})
  		}
@@ -225,7 +227,6 @@ $(document).ready(function(){
 function cargarCarrito(){
 	$("main").load("carrito.html")
 	$(document).ajaxComplete(function() {
-		$("main").load("carrito.html")
   		mostrarCarrito();
 	});
 }
