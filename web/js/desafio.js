@@ -35,10 +35,12 @@ function fullNum(){
 
 function calcTotal(){
 	total = 0
-	for (const [key, value] of Object.entries(storage)){
+	$(document).ajaxComplete(function() {
+		for (const [key, value] of Object.entries(storage)){
 			sub = parseInt(list[key].precio * storage[key])
 			total = total + sub;
-	}
+		}
+	})
 }
 
 //Agrega productos al carrito en el localStorage y si ya estan en el mismo, le suma uno a la cantidad
@@ -65,6 +67,7 @@ function cantidadTotal(id){
 		}
 		else{
 			storage[id] = 1
+			mostrarCarrito()
 		}
 	}
 	fullNum()
@@ -89,7 +92,7 @@ function vaciar(){
 		}
 }
 
-//Muestra que objetos hay en el carrito
+//Muestra que objetos hay en el carrito en la pagina de productos
 
 function enCarrito(){
 	for (const [key, value] of Object.entries(storage)){
@@ -143,6 +146,42 @@ function mostrarCarrito(){
 		}
 }
 
+//Carga el carrito del dropdown y la version mobile
+
+function mostrarMiniCarrito(){
+		productosCarrito = []
+		var mostrarMiniCarrito = document.getElementById("mostrarMiniCarrito");
+		for (const [key, value] of Object.entries(storage)){
+			calcTotal()
+			var producto = 
+				`<tr>
+					<td class="white" style="width: 30%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
+					<td scope="col" class="table__producto col-9 white" style="width: 50%"><b>${list[key].nombre} x ${storage[key]}<p>¥${list[key].precio}</p></b></td> 
+					<td  class="white col-1"><p>¥${parseInt(list[key].precio * storage[key])}</p></td>
+				</tr>`
+			productosCarrito.push(producto);
+			final = (productosCarrito.join(""));
+		}
+		if (mostrarMiniCarrito != null) {
+			if (storage.length == 0){
+				mostrarMiniCarrito.innerHTML = `<div class="background" style="display: flex;"><b style="padding:10% 5% 0 5%; font-size: 2rem;">Aun no ha seleccionado ningun producto.</b><img style="position: relative; right: 38%; bottom: 3%;" src="img/nada.png"></div>`
+			}
+			else{
+				mostrarMiniCarrito.innerHTML =
+					`<table class="table table-dark" style="border-radius: 25px;">
+				    	<thead>
+							` + final + `
+							<tr>
+							    <td style="width: 30%"> <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
+						    	<td  class="white col-9" style="width: 50%"> <button onclick="carritoDesktop()" id="carritoMobile" class="btn btn-primary btn-file">Ir a carrito</button></td>
+							    <td class="white col-1" style="width: 10%" id="precioTotal">Total:¥${total}</td>
+							</tr>
+						</thead>
+					</table>`
+			}
+		}
+}
+
 //Se encarga de cargar las distintas paginas
 
 $(document).ready(function(){
@@ -150,21 +189,39 @@ $(document).ready(function(){
   		$("main").load("home.html");
   		fullNum()
   	}
+
   	$("a").click(function(){
     	toLoad = (this.id)
-    	$("main").load(toLoad);
-    	$(document).ajaxComplete(function() {
-	  		enCarrito();
-	  		fullNum();
- 		})
+    	if(toLoad != "dropdownMenuLink"){
+	    	$("main").load(toLoad);
+	    	$(document).ajaxComplete(function() {
+		  		enCarrito();
+		  		fullNum();
+ 			})
+ 		}
+ 		else{
+ 			$(".dropdown-menu").toggle()
+ 		}
  	})
- 	$("#carrito").click(function(){
- 		$("main").load("carrito.html")
- 		$(document).ajaxComplete(function() {
-	  		mostrarCarrito();
- 		});
- 	});
 })
+
+ function carritoMobile(){
+ 		$(document).ajaxComplete(function() {
+ 	 		if ($("main").is(":empty")){
+ 	 			$("main").load("minicarrito.html");
+  	}
+	  	mostrarMiniCarrito();
+	  	$("#carritoMobile").hide();
+ 		});
+ 	};
+
+function carritoDesktop(){
+	$("main").load("carrito.html")
+	$(document).ajaxComplete(function() {
+  		mostrarCarrito();
+	});
+}
+
 
 //Maneja el menu dropdown del carrito
 
@@ -177,38 +234,27 @@ $(function(){
 	   		$(this).css("background-color", "lightblue");
 			},
 	  	click: function(){
-	    	for (const [key, value] of Object.entries(storage)){
-				carrito.push(list[key].nombre + " x" + storage[key]);
-			}
-			for (const [key, value] of Object.entries(storage)){
-				calcTotal()
-			}
-			final = (carrito.join("<br>"))
-			var crt = document.getElementById("crt");
-			if(final !== ""){
-				crt.innerHTML = final
-			}
-			else{
-				crt.innerHTML = "Nada Aun"
-			} 
-			$("#ttl").text("El total seria de ¥" + total);
-			$( ".carrito-dropdown" ).toggle();
-			carrito = []
-			total = 0
+	  		$(".carrito-dropdown").toggle();
+			$(".carrito-dropdown").load("minicarrito.html");
+ 			$(document).ajaxComplete(function() {
+	  			mostrarMiniCarrito();
+ 			})
 		},
 	})
 });
 
 //Cierra el carrito dropdown cuando se clickea dos veces. se clickea fuera del mismo o se se abre la pagina de carrito 
 
-$(document).mouseup(function(e) {
+$(document).bind( "mouseup touchend", function(e){
     var container = $(".carrito-dropdown");
-    var button = $("#carrito-dropdown")
-    $("#carrito").click(function(){
+  	var button = $("#carrito-dropdown")
+  	var dropdown = $(".dropdown-menu");
+  	var dropdownbutton = $("#dropdownMenuLink")
+    $("#carritoMobile").click(function(){
     	container.hide();
     })
-
-    if (!container.is(e.target) && container.has(e.target).length === 0 && !button.is(e.target) && button.has(e.target).length === 0){
+  	if ((!dropdown.is(e.target) && dropdown.has(e.target).length === 0 && !dropdownbutton.is(e.target) && dropdownbutton.has(e.target).length === 0)){
+    	dropdown.hide();
         container.hide();
-    }
+ 	 }
 });
