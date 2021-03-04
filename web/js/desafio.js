@@ -33,14 +33,17 @@ function fullNum(){
 
 //Calcula el costo total de todo lo comprado
 
+
 function calcTotal(){
 	total = 0
-	$(document).ajaxComplete(function() {
-		for (const [key, value] of Object.entries(storage)){
-			sub = parseInt(list[key].precio * storage[key])
-			total = total + sub;
+	for (const [key, value] of Object.entries(storage)){
+		sub = parseInt(list[key].precio * storage[key])
+		total = total + sub;
+		var precioTotal = document.getElementById("precioTotal");
+		if (precioTotal != null){
+			precioTotal.innerHTML = "¥" + total
 		}
-	})
+	}
 }
 
 //Agrega productos al carrito en el localStorage y si ya estan en el mismo, le suma uno a la cantidad
@@ -70,14 +73,13 @@ function cantidadTotal(id){
 			mostrarCarrito()
 		}
 	}
-	fullNum()
 	var precio = document.getElementById("td" + id);
-	var precioTotal = document.getElementById("precioTotal");
 	precio.innerHTML = "¥" + list[id].precio * storage[id];
 	calcTotal()
-	precioTotal.innerHTML = "¥" + total
+	fullNum()
 
 }
+
 
 //Vacia el carrito
 
@@ -112,10 +114,10 @@ function mostrarCarrito(){
 			calcTotal()
 			var producto = 
 				`<tr>
-					<td class="white" style="width: 16.666667%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
-					<td scope="col" class="table__producto col-9 white"><b>${list[key].nombre}</b><p>Tipo de producto: ${list[key].tipo}</p><p>Tipo de modelo: ${list[key].modelo}</p></td> 
-					<td class="white col-1" id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</td> 
-					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" class="form-control" style="padding-right: 0px; padding-left: 14px";>¥${list[key].precio}</td>
+					<td class="white" style="width: 50%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
+					<td scope="col" class="table__producto col-9 white"><b>${list[key].nombre}</b><p class="mobile__on">¥${list[key].precio}</p><p class="mobile__off">Tipo de producto: ${list[key].tipo}</p><p class="mobile__off">Tipo de modelo: ${list[key].modelo}</p></td> 
+					<td class="white col-1 mobile__off">¥${list[key].precio}</td> 
+					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" class="form-control" style="padding-right: 0px; padding-left: 14px";>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
 				</tr>`
 			productosCarrito.push(producto);
 		}
@@ -128,16 +130,16 @@ function mostrarCarrito(){
 					`<table class="table table-dark">
 				    	<thead>
 							<tr>
-						    	<th style="width: 16.666667%"> </th>
+						    	<th style="width: 50%"> </th>
 							    <th scope="col" class="white col-9">Nombre</th>
-							    <td class="white col-1" >Precio</td>
+							    <td class="white col-1 mobile__off" >Precio</td>
 							    <td class="white col-1">Cantidad</td>
 							</tr>
 							` + productosCarrito + `
 							<tr>
-							    <td style="width: 16.666667%">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
-						    	<td  class="white col-9"></td>
-							    <td scope="col" class="table__producto col-1 white">Total:</td>
+							    <td style="width: 50%">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
+						    	<td  class="white col-9"><p class="mobile__on">Total:</p></td>
+							    <td scope="col" class="table__producto col-1 white mobile__off">Total:</td>
 							    <td class="white col-1" id="precioTotal">¥${total}</td>
 							</tr>
 						</thead>
@@ -174,7 +176,7 @@ function mostrarMiniCarrito(){
 							<tr>
 							    <td style="width: 30%"> <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
 						    	<td  class="white col-9" style="width: 50%"> <button onclick="carritoDesktop()" id="carritoMobile" class="btn btn-primary btn-file">Ir a carrito</button></td>
-							    <td class="white col-1" style="width: 10%" id="precioTotal">Total:¥${total}</td>
+							    <td class="white col-1" style="width: 10%" id="precioTotalMini">Total:¥${total}</td>
 							</tr>
 						</thead>
 					</table>`
@@ -207,12 +209,10 @@ $(document).ready(function(){
 
  function carritoMobile(){
  		$(document).ajaxComplete(function() {
- 	 		if ($("main").is(":empty")){
- 	 			$("main").load("minicarrito.html");
-  	}
-	  	mostrarMiniCarrito();
-	  	$("#carritoMobile").hide();
- 		});
+ 	 	$("main").load("carrito.html");
+	  		mostrarCarrito();
+	  		$("#carritoMobile").hide();
+ 		})
  	};
 
 function carritoDesktop(){
