@@ -59,6 +59,18 @@ function add(id){
 	fullNum()
 }
 
+function cantidadTotalMas(id){
+	var suma = document.getElementById(id);
+	suma.value = parseInt(suma.value) + 1
+	cantidadTotal(id)
+}
+
+function cantidadTotalMenos(id){
+	var resta = document.getElementById(id);
+	resta.value = parseInt(resta.value) - 1
+	cantidadTotal(id)
+}
+
 //Maneja la cantidad puesta en el input del carrito
 
 function cantidadTotal(id){
@@ -115,9 +127,9 @@ function mostrarCarrito(){
 			var producto = 
 				`<tr>
 					<td class="white" style="width: 50%"><img class="col-12" src="img/${list[key].id}.jpg"></td> 
-					<td scope="col" class="table__producto col-9 white"><b>${list[key].nombre}</b><p class="mobile__on">¥${list[key].precio}</p><p class="mobile__off">Tipo de producto: ${list[key].tipo}</p><p class="mobile__off">Tipo de modelo: ${list[key].modelo}</p></td> 
+					<td scope="col" class="table__producto col-8 white"><b>${list[key].nombre}</b><p class="mobile__on">¥${list[key].precio}</p><p class="mobile__off">Tipo de producto: ${list[key].tipo}</p><p class="mobile__off">Tipo de modelo: ${list[key].modelo}</p></td> 
 					<td class="white col-1 mobile__off">¥${list[key].precio}</td> 
-					<td  class="white col-1"><input class="col-12 cantidad" type="number" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" min="0" max="99" value="${storage[key]}" class="form-control" style="padding-right: 0px; padding-left: 14px";>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
+					<td  class="white col-2"><div style="width: 100px; display: flex;"><button style="height: 34px;" onclick="cantidadTotalMenos(${key})">-</button><input style="max-width: 35px; padding: 0;" type="tel" value="${storage[key]}" class="col-12 cantidad" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" ><button style="height: 34px" onclick="cantidadTotalMas(${key})">+</button></div>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
 				</tr>`
 			productosCarrito.push(producto);
 		}
@@ -133,14 +145,14 @@ function mostrarCarrito(){
 						    	<th style="width: 50%"> </th>
 							    <th scope="col" class="white col-9">Nombre</th>
 							    <td class="white col-1 mobile__off" >Precio</td>
-							    <td class="white col-1">Cantidad</td>
+							    <td class="white col-2">Cantidad</td>
 							</tr>
 							` + productosCarrito + `
 							<tr>
 							    <td style="width: 50%">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
-						    	<td  class="white col-9"><p class="mobile__on">Total:</p></td>
+						    	<td  class="white col-8"><p class="mobile__on">Total:</p></td>
 							    <td scope="col" class="table__producto col-1 white mobile__off">Total:</td>
-							    <td class="white col-1" id="precioTotal">¥${total}</td>
+							    <td class="white col-2" id="precioTotal">¥${total}</td>
 							</tr>
 						</thead>
 					</table>`
