@@ -88,7 +88,7 @@ function cantidadTotal(id){
 	if (storage[id] == 0){
 		if (confirm("Esta seguro de que eliminar este produto?")){
 		localStorage.removeItem(id)
-		$("main").load("carrito.html");
+		$("#main").load("carrito.html");
 		}
 		else{
 			storage[id] = 1
@@ -113,6 +113,7 @@ function vaciar(){
 			$("#ttl").text("El total seria de ¥0")
 			mostrarCarrito();
 			fullNum();
+			$("#mostrarMiniCarrito").hide()
 		}
 }
 
@@ -130,7 +131,7 @@ function enCarrito(){
 
 function mostrarCarrito(){
 		var productosCarrito = []
-		var mostrarCarrito = document.getElementById("mostrarCarrito");
+		var mostrarCarrito = document.getElementById("mostrarCarrito")
 		for (const [key, value] of Object.entries(storage)){
 			calcTotal()
 			var producto = 
@@ -144,32 +145,30 @@ function mostrarCarrito(){
 		}
 		if (mostrarCarrito != null) {
 			if (storage.length == 0){
-				mostrarCarrito.innerHTML = `<div class="background" style="display: flex;"><img src="img/vacio.png" class="mobile__on" style="position: absolute;left: 20px;max-height: 30px;top: 150px;"><b class="mobile__off" style="padding:10% 5% 0 5%; font-size: 4rem;">Aun no ha seleccionado ningun producto.</b><img style="padding-right: 5%; width:100%;" src="img/nada.png"></div>`
+				mostrarCarrito.innerHTML =  `<div class="background" style="display: flex;"><img src="img/vacio.png" class="mobile__on" style="position: absolute;left: 20px;max-height: 30px;top: 150px;"><b class="mobile__off" style="padding:10% 5% 0 5%; font-size: 4rem;">Aun no ha seleccionado ningun producto.</b><img style="padding-right: 5%; width:100%;" src="img/nada.png"></div>`
 			}
 			else{
-				mostrarCarrito.innerHTML =
-					`<table class="table table-dark">
-				    	<thead>
-							<tr>
-						    	<th style="max-width: 50% min-width: 20%;"> </th>
-							    <th scope="col" class="white col-9">Nombre</th>
-							    <td class="white col-1 mobile__off" >Precio</td>
-							    <td class="white col-2">Cantidad</td>
-							</tr>
-							` + productosCarrito + `
-							<tr>
-							    <td style="max-width: 50% min-width: 20%;">    <button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
-						    	<td  class="white col-8"><p class="mobile__on">Total:</p></td>
-							    <td scope="col" class="table__producto col-1 white mobile__off">Total:</td>
-							    <td class="white col-2" id="precioTotal">¥${total}</td>
-							</tr>
-						</thead>
-					</table>`
+				mostrarCarrito.innerHTML = 
+				`<table class="table table-dark">
+			    	<thead>
+						<tr>
+					    	<th style="max-width: 50% min-width: 20%;"> </th>
+						    <th scope="col" class="white col-9">Nombre</th>
+						    <td class="white col-1 mobile__off" >Precio</td>
+						    <td class="white col-2">Cantidad</td>
+						</tr>
+						 ${productosCarrito}
+						<tr>
+						    <td style="max-width: 50% min-width: 20%; display: flex;"><button onclick="vaciar()" class="btn btn-primary btn-file">Vaciar carrito</button></td>
+					    	<td  class="white col-8"><p class="mobile__on">Total:</p></td>
+						    <td scope="col" class="table__producto col-1 white mobile__off">Total:</td>
+						    <td class="white col-2" id="precioTotal">¥${total}</td>
+						</tr>
+					</thead>
+				</table>`
 			}
 		}
 }
-
-//Carga el carrito del dropdown y la version mobile
 
 function mostrarMiniCarrito(){
 		productosCarrito = []
@@ -187,7 +186,8 @@ function mostrarMiniCarrito(){
 		}
 		if (mostrarMiniCarrito != null) {
 			if (storage.length == 0){
-				mostrarMiniCarrito.innerHTML = `<div class="background" style="display: flex;"><b style="padding:10% 5% 0 5%; font-size: 2rem;">Aun no ha seleccionado ningun producto.</b><img style="position: relative; right: 38%; bottom: 3%;" src="img/nada.png"></div>`
+				mostrarMiniCarrito.innerHTML = `<div class="background" style="display: flex; height: 100%"><img src="img/vacio.png" style="position: absolute;left: 20px;max-height: 20%;"><img style="padding-right: 5%; width:100%;" src="img/nada.png"></div>`
+
 			}
 			else{
 				mostrarMiniCarrito.innerHTML =
@@ -205,19 +205,53 @@ function mostrarMiniCarrito(){
 		}
 }
 
+//Carga la pagina de productos
+
+function productos(){
+		var todos = []
+		var productos = document.getElementById("productos");
+		if(productos != null){
+			for (const [key, value] of Object.entries(list)){
+				calcTotal()
+				if(key > 0){
+					var producto = 
+						`<tr>
+		                <th scope="col">
+		                    <a class="pop">
+		                        <img src="img/${list[key].id}.jpg" id="${list[key].id}" alt="${list[key].info}">
+		                        <p class="mobile__on">¥${list[key].precio}</p><button class="mobile__on btn btn-primary btn-fil" onclick="add(${list[key].numero})" id="btn-${list[key].numero}">Agregar</button>
+		                    </a>
+		                </th>
+		                <td scope="col" class="table__producto"><b>${list[key].info}</b><p class="mobile__on cantidad" id="bp-${[key]}"><p class="mobile__off">${list[key].descripcion}</p></td>
+		                <td class="mobile__off">¥${list[key].precio}<button class="btn btn-primary btn-file" onclick="add(${list[key].numero})" id="btn-${list[key].numero}">Agregar</button><p class="cantidad" id="bp-${list[key].numero}"></p></td>
+		                
+		            </tr>`
+					todos.push(producto);
+				}
+				productos.innerHTML =
+					`<table class="table table-dark">
+				    	<thead>` 
+						+ todos + `
+						</thead>
+					</table>`
+				}
+		}
+}
+
 //Se encarga de cargar las distintas paginas
 
 $(document).ready(function(){
-	if ($("main").is(":empty")){
-  		$("main").load("home.html");
+	if ($("#main").is(":empty")){
+  		$("#main").load("home.html");
   		fullNum()
   	}
 
   	$("a").click(function(){
     	toLoad = (this.id)
     	if(toLoad != "dropdownMenuLink"){
-	    	$("main").load(toLoad);
+	    	$("#main").load(toLoad);
 	    	$(document).ajaxComplete(function() {
+		  		productos()
 		  		enCarrito();
 		  		mostrarCarrito();
 		  		fullNum();
@@ -231,7 +265,7 @@ $(document).ready(function(){
 
 
 function cargarCarrito(){
-	$("main").load("carrito.html")
+	$("#main").load("carrito.html")
 	$(document).ajaxComplete(function() {
   		mostrarCarrito();
 	});
@@ -250,10 +284,7 @@ $(function(){
 			},
 	  	click: function(){
 	  		$(".carrito-dropdown").toggle();
-			$(".carrito-dropdown").load("minicarrito.html");
- 			$(document).ajaxComplete(function() {
 	  			mostrarMiniCarrito();
- 			})
 		},
 	})
 });
@@ -268,7 +299,7 @@ $(document).bind( "mouseup touchend", function(e){
     $("#carritoMobile").click(function(){
     	container.hide();
     })
-  	if ((!dropdown.is(e.target) && dropdown.has(e.target).length === 0 && !dropdownbutton.is(e.target) && dropdownbutton.has(e.target).length === 0)){
+  	if (((!dropdown.is(e.target) && dropdown.has(e.target).length === 0 && !dropdownbutton.is(e.target) && dropdownbutton.has(e.target).length === 0)) && ((!container.is(e.target) && container.has(e.target).length === 0 && !button.is(e.target) && button.has(e.target).length === 0))){
     	dropdown.hide();
         container.hide();
  	 }
