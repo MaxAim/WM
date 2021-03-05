@@ -138,13 +138,13 @@ function mostrarCarrito(){
 					<td class="white" style="max-width: 50%; min-width: 20%;"><img style="max-width: 200px" class="col-12" src="img/${list[key].id}.jpg"></td> 
 					<td scope="col" class="table__producto col-8 white"><b>${list[key].nombre}</b><p class="mobile__on">¥${list[key].precio}</p><p class="mobile__off">Tipo de producto: ${list[key].tipo}</p><p class="mobile__off">Tipo de modelo: ${list[key].modelo}</p></td> 
 					<td class="white col-1 mobile__off">¥${list[key].precio}</td> 
-					<td  class="white col-2"><div style="width: 100px; display: flex;"><button class="btn-secondary" style="height: 34px;" onclick="cantidadTotalMenos(${key})">-</button><input style="max-width: 35px; padding: 0; background-color: lightgray;" type="tel" value="${storage[key]}" class="col-12 cantidad" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" ><button class="btn-secondary" style="height: 34px" onclick="cantidadTotalMas(${key})">+</button></div>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
+					<td  class="white col-2"><div style="width: 100px; display: flex; overflow: clip"><button class="btn-secondary" style="height: 34px;" onclick="cantidadTotalMenos(${key})">-</button><input style="max-width: 35px; padding: 0; background-color: lightgray;" type="tel" value="${storage[key]}" class="col-12 cantidad" onchange="cantidadTotal(${list[key].numero})" id="${list[key].numero}" ><button class="btn-secondary" style="height: 34px" onclick="cantidadTotalMas(${key})">+</button></div>Subtotal:<p id="td${list[key].numero}">¥${parseInt(list[key].precio * storage[key])}</p></td>
 				</tr>`
 			productosCarrito.push(producto);
 		}
 		if (mostrarCarrito != null) {
 			if (storage.length == 0){
-				mostrarCarrito.innerHTML = `<div class="background" style="display: flex;"><img src="img/vacio.png" class="mobile__on" style="position: absolute;left: 20px;max-height: 30px;top: 150px;"><b class="mobile__off" style="padding:10% 5% 0 5%; font-size: 4rem;">Aun no ha seleccionado ningun producto.</b><img style="padding-right: 5%; width:auto; max-width:-moz-available;" src="img/nada.png"></div>`
+				mostrarCarrito.innerHTML = `<div class="background" style="display: flex;"><img src="img/vacio.png" class="mobile__on" style="position: absolute;left: 20px;max-height: 30px;top: 150px;"><b class="mobile__off" style="padding:10% 5% 0 5%; font-size: 4rem;">Aun no ha seleccionado ningun producto.</b><img style="padding-right: 5%; width:100%;" src="img/nada.png"></div>`
 			}
 			else{
 				mostrarCarrito.innerHTML =
